@@ -11,7 +11,7 @@ using Soenneker.Utils.HttpClientCache.Abstract;
 namespace Soenneker.Cloudflare.HttpClient;
 
 ///<inheritdoc cref="ICloudflareHttpClient"/>
-public class CloudflareHttpClient : ICloudflareHttpClient
+public sealed class CloudflareHttpClient : ICloudflareHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
     private readonly IConfiguration _config;
