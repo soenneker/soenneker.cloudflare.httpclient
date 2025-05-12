@@ -11,23 +11,21 @@ namespace Soenneker.Cloudflare.HttpClient.Registrars;
 public static class CloudflareHttpClientRegistrar
 {
     /// <summary>
-    /// Adds <see cref="IGitHubHttpClient"/> as a singleton service. <para/>
+    /// Adds <see cref="ICloudflareHttpClient"/> as a singleton service. <para/>
     /// </summary>
     public static IServiceCollection AddCloudflareHttpClientAsSingleton(this IServiceCollection services)
     {
-        services.AddHttpClientCacheAsSingleton()
-                .TryAddSingleton<ICloudflareHttpClient, CloudflareHttpClient>();
+        services.AddHttpClientCacheAsSingleton().TryAddSingleton<ICloudflareHttpClient, CloudflareHttpClient>();
 
         return services;
     }
 
     /// <summary>
-    /// Adds <see cref="IGitHubHttpClient"/> as a scoped service. <para/>
+    /// Adds <see cref="ICloudflareHttpClient"/> as a scoped service. <para/>
     /// </summary>
     public static IServiceCollection AddCloudflareHttpClientAsScoped(this IServiceCollection services)
     {
-        services.AddHttpClientCacheAsSingleton()
-                .TryAddScoped<ICloudflareHttpClient, CloudflareHttpClient>();
+        services.AddHttpClientCacheAsSingleton().TryAddScoped<ICloudflareHttpClient, CloudflareHttpClient>();
 
         return services;
     }

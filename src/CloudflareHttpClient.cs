@@ -26,7 +26,8 @@ public class CloudflareHttpClient : ICloudflareHttpClient
 
     public ValueTask<System.Net.Http.HttpClient> Get(CancellationToken cancellationToken = default)
     {
-        return _httpClientCache.Get(nameof(CloudflareHttpClient), () => {
+        return _httpClientCache.Get(nameof(CloudflareHttpClient), () =>
+        {
             var apiKey = _config.GetValueStrict<string>("Cloudflare:ApiKey");
 
             var options = new HttpClientOptions
