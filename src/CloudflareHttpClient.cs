@@ -44,15 +44,11 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
 
     public void Dispose()
     {
-        GC.SuppressFinalize(this);
-
         _httpClientCache.RemoveSync(nameof(CloudflareHttpClient));
     }
 
     public ValueTask DisposeAsync()
     {
-        GC.SuppressFinalize(this);
-
         return _httpClientCache.Remove(nameof(CloudflareHttpClient));
     }
 }
