@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -35,7 +34,7 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
                 BaseAddress = _prodBaseUrl,
                 DefaultRequestHeaders = new Dictionary<string, string>
                 {
-                    {"Authorization", $"Bearer {apiKey}"},
+                    { "Authorization", $"Bearer {apiKey}" },
                 }
             };
             return options;
