@@ -13,32 +13,31 @@ namespace Soenneker.Cloudflare.HttpClient;
 public sealed class CloudflareHttpClient : ICloudflareHttpClient
 {
     private readonly IHttpClientCache _httpClientCache;
-    private readonly IConfiguration _config;
+    private readonly string _apiKey;
 
     private const string _prodBaseUrl = "https://api.cloudflare.com/client/v4/";
 
     public CloudflareHttpClient(IHttpClientCache httpClientCache, IConfiguration config)
     {
         _httpClientCache = httpClientCache;
-        _config = config;
+        _apiKey = config.GetValueStrict<string>("Cloudflare:ApiKey");
     }
 
     public ValueTask<System.Net.Http.HttpClient> Get(CancellationToken cancellationToken = default)
     {
-        return _httpClientCache.Get(nameof(CloudflareHttpClient), () =>
-        {
-            var apiKey = _config.GetValueStrict<string>("Cloudflare:ApiKey");
+        return _httpClientCache.Get(nameof(CloudflareHttpClient), CreateHttpClientOptions, cancellationToken);
+    }
 
-            var options = new HttpClientOptions
+    private HttpClientOptions? CreateHttpClientOptions()
+    {
+        return new HttpClientOptions
+        {
+            BaseAddress = _prodBaseUrl,
+            DefaultRequestHeaders = new Dictionary<string, string>
             {
-                BaseAddress = _prodBaseUrl,
-                DefaultRequestHeaders = new Dictionary<string, string>
-                {
-                    { "Authorization", $"Bearer {apiKey}" },
-                }
-            };
-            return options;
-        }, cancellationToken: cancellationToken);
+                { "Authorization", $"Bearer {_apiKey}" },
+            }
+        };
     }
 
     public void Dispose()
