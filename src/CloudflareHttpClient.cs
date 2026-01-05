@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
@@ -15,7 +16,7 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
     private readonly IHttpClientCache _httpClientCache;
     private readonly string _apiKey;
 
-    private const string _prodBaseUrl = "https://api.cloudflare.com/client/v4/";
+    private static readonly Uri _prodBaseUrl = new("https://api.cloudflare.com/client/v4/");
 
     public CloudflareHttpClient(IHttpClientCache httpClientCache, IConfiguration config)
     {
@@ -25,19 +26,15 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
 
     public ValueTask<System.Net.Http.HttpClient> Get(CancellationToken cancellationToken = default)
     {
-        return _httpClientCache.Get(nameof(CloudflareHttpClient), CreateHttpClientOptions, cancellationToken);
-    }
-
-    private HttpClientOptions? CreateHttpClientOptions()
-    {
-        return new HttpClientOptions
+        // No closure: state passed explicitly + static lambda
+        return _httpClientCache.Get(nameof(CloudflareHttpClient), _apiKey, static apiKey => new HttpClientOptions
         {
             BaseAddress = _prodBaseUrl,
             DefaultRequestHeaders = new Dictionary<string, string>
             {
-                { "Authorization", $"Bearer {_apiKey}" },
+                { "Authorization", $"Bearer {apiKey}" },
             }
-        };
+        }, cancellationToken);
     }
 
     public void Dispose()
