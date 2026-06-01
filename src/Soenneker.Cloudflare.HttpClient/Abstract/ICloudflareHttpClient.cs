@@ -10,4 +10,6 @@ namespace Soenneker.Cloudflare.HttpClient.Abstract;
 public interface ICloudflareHttpClient: IDisposable, IAsyncDisposable
 {
     ValueTask<System.Net.Http.HttpClient> Get(CancellationToken cancellationToken = default);
+
+    ValueTask<System.Net.Http.HttpClient> Get(string apiKey, CancellationToken cancellationToken = default);
 }
