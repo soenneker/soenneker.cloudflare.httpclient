@@ -52,6 +52,9 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
         }, cancellationToken);
     }
 
+    /// <summary>
+    /// Releases resources used by the current instance.
+    /// </summary>
     public void Dispose()
     {
         foreach (string clientId in _clientIds.Keys)
@@ -60,6 +63,10 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
         }
     }
 
+    /// <summary>
+    /// Asynchronously releases resources used by the current instance.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous operation.</returns>
     public async ValueTask DisposeAsync()
     {
         foreach (string clientId in _clientIds.Keys)
