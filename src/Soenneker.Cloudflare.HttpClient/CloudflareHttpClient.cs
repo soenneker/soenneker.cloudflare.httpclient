@@ -70,6 +70,26 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
             }, cancellationToken);
     }
 
+    public ValueTask<bool> Remove(CancellationToken cancellationToken = default) => Remove(_apiKey, cancellationToken);
+
+    public async ValueTask<bool> Remove(string apiKey, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        string clientId = GetClientId(apiKey);
+        await _httpClientCache.Remove(clientId);
+        return _clientIds.TryRemove(clientId, out _);
+    }
+
+    public bool RemoveSync(CancellationToken cancellationToken = default) => RemoveSync(_apiKey, cancellationToken);
+
+    public bool RemoveSync(string apiKey, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        string clientId = GetClientId(apiKey);
+        _httpClientCache.RemoveSync(clientId);
+        return _clientIds.TryRemove(clientId, out _);
+    }
+
     public void Dispose()
     {
         foreach (string clientId in _clientIds.Keys)

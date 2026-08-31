@@ -46,6 +46,6 @@ public sealed class CloudflareZoneReader(ICloudflareHttpClient clientProvider)
 }
 ```
 
-`Get(string apiKey)` creates or reuses a separate client for that token. Every distinct token remains cached until the provider is disposed, so do not feed it an unbounded stream of short-lived credentials.
+`Get(string apiKey)` creates or reuses a separate client for that token. `Remove(apiKey)` or `RemoveSync(apiKey)` removes and disposes that token's client immediately. Otherwise, every distinct token remains cached until the provider is disposed, so do not feed it an unbounded stream of short-lived credentials.
 
 The provider owns all cache entries it creates. Disposing it removes and disposes those clients. Singleton registration is the normal application-wide lifetime; scoped registration creates isolated cache entries owned by each provider scope.
