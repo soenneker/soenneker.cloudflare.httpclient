@@ -1,3 +1,4 @@
+using System.Threading;
 using System;
 using System.Threading.Tasks;
 using Soenneker.Cloudflare.HttpClient.Abstract;
@@ -16,9 +17,9 @@ public class CloudflareHttpClientTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Default_uses_configured_api_key()
+    public async ValueTask Default_uses_configured_api_key(CancellationToken cancellationToken)
     {
-        System.Net.Http.HttpClient client = await _httpclient.Get();
+        System.Net.Http.HttpClient client = await _httpclient.Get(cancellationToken: cancellationToken);
 
         string? authorization = client.DefaultRequestHeaders.Authorization?.ToString();
 
@@ -27,11 +28,11 @@ public class CloudflareHttpClientTests : HostedUnitTest
     }
 
     [Test]
-    public async ValueTask Get_with_api_key_returns_keyed_clients()
+    public async ValueTask Get_with_api_key_returns_keyed_clients(CancellationToken cancellationToken)
     {
-        System.Net.Http.HttpClient first = await _httpclient.Get("first-api-key");
-        System.Net.Http.HttpClient firstAgain = await _httpclient.Get("first-api-key");
-        System.Net.Http.HttpClient second = await _httpclient.Get("second-api-key");
+        System.Net.Http.HttpClient first = await _httpclient.Get("first-api-key", cancellationToken: cancellationToken);
+        System.Net.Http.HttpClient firstAgain = await _httpclient.Get("first-api-key", cancellationToken: cancellationToken);
+        System.Net.Http.HttpClient second = await _httpclient.Get("second-api-key", cancellationToken: cancellationToken);
 
         if (!ReferenceEquals(first, firstAgain))
             throw new InvalidOperationException("Expected the same API key to reuse the cached Cloudflare HttpClient.");
