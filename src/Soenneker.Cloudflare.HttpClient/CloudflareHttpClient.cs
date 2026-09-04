@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +10,7 @@ using Soenneker.Extensions.Configuration;
 using Soenneker.Cloudflare.HttpClient.Abstract;
 using Soenneker.Dtos.HttpClientOptions;
 using Soenneker.HttpClients.LoggingHandler;
+using Soenneker.Hashing.Sha256;
 using Soenneker.Utils.HttpClientCache.Abstract;
 
 namespace Soenneker.Cloudflare.HttpClient;
@@ -18,6 +18,8 @@ namespace Soenneker.Cloudflare.HttpClient;
 /// <inheritdoc cref="ICloudflareHttpClient" />
 public sealed class CloudflareHttpClient : ICloudflareHttpClient
 {
+    private static readonly Sha256HashingUtil _sha256 = new();
+
     private readonly IHttpClientCache _httpClientCache;
     private readonly string _apiKey;
     private readonly bool _requestResponseLogging;
@@ -109,7 +111,7 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
 
     private string GetClientId(string apiKey)
     {
-        byte[] hash = SHA256.HashData(Encoding.UTF8.GetBytes(apiKey));
+        byte[] hash = _sha256.Hash(Encoding.UTF8.GetBytes(apiKey));
 
         return $"{nameof(CloudflareHttpClient)}:{_instanceId}:{Convert.ToHexString(hash)}";
     }
