@@ -22,6 +22,7 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
 
     private readonly IHttpClientCache _httpClientCache;
     private readonly string _apiKey;
+    private readonly string _defaultClientId;
     private readonly bool _requestResponseLogging;
     private readonly ILogger<CloudflareHttpClient> _logger;
     private readonly ConcurrentDictionary<string, byte> _clientIds = new();
@@ -36,6 +37,7 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
         _apiKey = config.GetValueStrict<string>("Cloudflare:ApiKey");
         _requestResponseLogging = config.GetValue<bool>("Cloudflare:RequestResponseLogging");
         _logger = logger;
+        _defaultClientId = CreateClientId(_apiKey);
     }
 
     public ValueTask<System.Net.Http.HttpClient> Get(CancellationToken cancellationToken = default)
@@ -109,7 +111,10 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
         }
     }
 
-    private string GetClientId(string apiKey)
+    private string GetClientId(string apiKey) =>
+        string.Equals(apiKey, _apiKey, StringComparison.Ordinal) ? _defaultClientId : CreateClientId(apiKey);
+
+    private string CreateClientId(string apiKey)
     {
         byte[] hash = _sha256.Hash(Encoding.UTF8.GetBytes(apiKey));
 
