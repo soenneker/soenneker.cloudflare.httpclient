@@ -34,7 +34,7 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
         ILogger<CloudflareHttpClient> logger)
     {
         _httpClientCache = httpClientCache;
-        _apiKey = config.GetValueStrict<string>("Cloudflare:ApiKey");
+        _apiKey = config.GetStringStrict("Cloudflare:ApiKey");
         _requestResponseLogging = config.GetValue<bool>("Cloudflare:RequestResponseLogging");
         _logger = logger;
         _defaultClientId = CreateClientId(_apiKey);
