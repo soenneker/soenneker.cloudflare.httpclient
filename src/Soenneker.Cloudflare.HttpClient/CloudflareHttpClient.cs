@@ -68,6 +68,9 @@ public sealed class CloudflareHttpClient : ICloudflareHttpClient
                         () => new HttpClientLoggingHandler(state.logger, new HttpClientLoggingOptions
                         {
                             LogLevel = LogLevel.Debug,
+                            LogRequestBody = true,
+                            LogResponseBody = true,
+                            LogQueryString = true,
                             RedactedHeaders = ["Authorization"]
                         })
                     ]
